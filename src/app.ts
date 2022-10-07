@@ -1,33 +1,29 @@
-import expres, {Application, Request, Response } from 'express';
+import express, {Application } from 'express';
 import dotenv from 'dotenv';
+
+
+
+//Routes
+import bootcampRoutes from './routes/bootcamp-routes';
+import morgan from 'morgan';
+
+
+
 
 // Load env config
 dotenv.config();
 
-const app: Application = expres();
+const app: Application = express();
 
-const baseUrl = '/api/v1'
+const baseUrl = '/api/v1';
 
-app.get(`${baseUrl}/bootcamps`, (req: Request, res: Response) => {
-    res.status(200).json({ status: true, msg: 'Show all bootcamps'});
-});
+// Log middleware
+app.use(morgan('dev'));
 
-app.get(`${baseUrl}/bootcamps/:id`, (req: Request, res: Response) => {
-    res.status(200).json({ status: true, msg: `Show bootcamp ${req.params.id}`});
-});
-
-app.post(`${baseUrl}/bootcamps`, (req: Request, res: Response) => {
-    res.status(200).json({ status: true, msg: 'Create bootcamp'});
-});
+// Route initialization
+app.use(`${baseUrl}/bootcamps`, bootcampRoutes);
 
 
-app.put(`${baseUrl}/bootcamps/:id`, (req: Request, res: Response) => {
-    res.status(200).json({ status: true, msg: `Update bootcamp ${req.params.id}`});
-});
-
-app.delete(`${baseUrl}/bootcamps/:id`, (req: Request, res: Response) => {
-    res.status(200).json({ status: true, msg: `Delete bootcamp ${req.params.id}`});
-});
 
 const PORT = process.env.PORT ?? 5000;
 
