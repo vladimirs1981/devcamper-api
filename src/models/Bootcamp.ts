@@ -1,9 +1,10 @@
 import mongoose, { Schema } from "mongoose";
 import { IBootcamp } from "../interfaces/bootcamp-interface";
 import slugify from "slugify";
+import geocoder from "../utils/geocoder";
 
 
-const BootcampSchema = new Schema<IBootcamp>({
+const BootcampSchema = new Schema({
     name: {
         type: String,
         required: [true, 'Please add a name'],
@@ -106,6 +107,27 @@ const BootcampSchema = new Schema<IBootcamp>({
 BootcampSchema.pre('save', function(next) {
     this.slug = slugify(this.name, { lower: true });
     next();
+});
+
+// Geocode & create location field
+BootcampSchema.pre('save', async function(next) {
+    const loc = await geocoder.geocode(this.address);
+    this.location = {
+        type: 'Point',
+        coordinates: [loc[0].longitude, loc[0].latitude],
+        formattedAddress: loc[0].formattedAddress,
+        street: loc[0].streetName,
+        city: loc[0].city,
+        state: loc[0].stateCode,
+        zipcode: loc[0].zipcode,
+        country: loc[0].countryCode,
+
+    } as any;
+
+    // Do not save address in DB
+    this.address = '';
+    next();
 })
+
 
 export default mongoose.model('Bootcamp', BootcampSchema);
