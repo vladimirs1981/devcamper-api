@@ -9,11 +9,11 @@ export interface IBootcamp {
     location: {
         type: {
             type: string,
-          //  enum: string[]
+            //  enum: string[]
         },
         coordinates: {
             type: number[],
-           // index: string
+            // index: string
         },
         formattedAddress: string,
         street: string,
