@@ -1,12 +1,10 @@
-import { NextFunction, Request, RequestHandler, Response } from "express"
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 
-// export const asyncHandler = (fn) = (req: Request, res: Response, next: NextFunction) => {
-//     Promise
-//         .resolve(fn(req, res, next))
-//         .catch(next)
-// }
-
-type AsyncRequestHandler = (req: Request, res: Response, next: NextFunction) => Promise<any>;
+type AsyncRequestHandler = (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => Promise<any>;
 
 /**
  * Catches errors and passes them to the next callback
@@ -14,7 +12,7 @@ type AsyncRequestHandler = (req: Request, res: Response, next: NextFunction) => 
  * @returns Async express request handler with error handling
  */
 export default (handler: AsyncRequestHandler): RequestHandler => {
-  return (req, res, next) => {
-    return handler(req, res, next).catch(next);
-  };
+	return (req, res, next) => {
+		return handler(req, res, next).catch(next);
+	};
 };

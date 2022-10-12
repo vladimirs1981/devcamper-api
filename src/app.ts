@@ -1,11 +1,13 @@
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
+import fileUpload from 'express-fileupload';
 import { errorHandler } from './middlewares/error-handling.middleware';
 //Routes
 import bootcampRoutes from './routes/bootcamp-routes';
 import courseRoutes from './routes/course-routes';
 import morgan from 'morgan';
 import connectDB from './config/db';
+import path from 'path';
 
 // Load env config
 dotenv.config();
@@ -22,6 +24,13 @@ const baseUrl = '/api/v1';
 
 // Log middleware
 app.use(morgan('dev'));
+
+// File upload
+app.use(fileUpload());
+
+// Set static folder
+console.log(path.join(__dirname, '../public'));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // Route initialization
 app.use(`${baseUrl}/bootcamps`, bootcampRoutes);

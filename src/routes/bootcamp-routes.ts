@@ -6,7 +6,12 @@ import {
 	updateBootcamp,
 	deleteBootcamp,
 	getBootcampsInRadius,
+	bootcampPhotoUpload,
 } from '../controllers/bootcamp-controller';
+import Bootcamp from '../models/Bootcamp';
+
+// Middleware
+import advancedResults from '../middlewares/advanced-results.middleware';
 
 // Include other resourse routers
 import courseRouter from './course-routes';
@@ -18,7 +23,12 @@ router.use('/:bootcampId/courses', courseRouter);
 
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius);
 
-router.route('/').get(getAllBootcamps).post(createBootcamp);
+router
+	.route('/')
+	.get(advancedResults(Bootcamp, 'courses'), getAllBootcamps)
+	.post(createBootcamp);
+
+router.route('/:id/photo').put(bootcampPhotoUpload);
 
 router
 	.route('/:id')
