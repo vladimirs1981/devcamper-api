@@ -4,7 +4,6 @@ import Bootcamp from '../models/Bootcamp';
 import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import path from 'path';
-import { AdvancedResponse } from '../middlewares/advanced-results.middleware';
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -132,8 +131,13 @@ export const bootcampPhotoUpload = asyncHandler(
 			return next(new ErrorResponse(`Please upload an image file`, 400));
 		}
 
+		const maxFileUpload: Number = parseInt(
+			<string>process.env.MAX_FILE_UPLOAD,
+			10
+		);
+
 		// Check filesize
-		if (file.size > (process.env.MAX_FILE_UPLOAD as any)) {
+		if (file.size > maxFileUpload) {
 			return next(
 				new ErrorResponse(
 					`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`,

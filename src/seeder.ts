@@ -3,7 +3,7 @@ import mongoose, { ConnectOptions } from 'mongoose';
 import dotenv from 'dotenv';
 // Load models
 import Bootcamp from './models/Bootcamp';
-import Course from './models/Course';
+import { Course } from './models/Course';
 import path from 'path';
 
 // Load env vars

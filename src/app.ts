@@ -1,10 +1,12 @@
 import express, { Application } from 'express';
 import dotenv from 'dotenv';
 import fileUpload from 'express-fileupload';
+import cookieParser from 'cookie-parser';
 import { errorHandler } from './middlewares/error-handling.middleware';
 //Routes
 import bootcampRoutes from './routes/bootcamp-routes';
 import courseRoutes from './routes/course-routes';
+import authRoutes from './routes/auth-routes';
 import morgan from 'morgan';
 import connectDB from './config/db';
 import path from 'path';
@@ -19,6 +21,9 @@ const app: Application = express();
 
 // Body parser
 app.use(express.json());
+
+// Cookie parser
+app.use(cookieParser());
 
 const baseUrl = '/api/v1';
 
@@ -35,6 +40,7 @@ app.use(express.static(path.join(__dirname, '../public')));
 // Route initialization
 app.use(`${baseUrl}/bootcamps`, bootcampRoutes);
 app.use(`${baseUrl}/courses`, courseRoutes);
+app.use(`${baseUrl}/auth`, authRoutes);
 
 // Error middleware, must be after route initialization
 app.use(errorHandler);

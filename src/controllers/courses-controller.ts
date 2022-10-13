@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import Course from '../models/Course';
+import { Course } from '../models/Course';
 import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import Bootcamp from '../models/Bootcamp';

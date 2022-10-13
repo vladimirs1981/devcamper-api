@@ -5,8 +5,9 @@ import {
 	getCourse,
 	addCourse,
 } from '../controllers/courses-controller';
+import { authorize, protect } from '../middlewares/auth.middleware';
 import advancedResults from '../middlewares/advanced-results.middleware';
-import Course from '../models/Course';
+import { Course } from '../models/Course';
 
 const router: Router = express.Router({ mergeParams: true });
 
@@ -19,8 +20,12 @@ router
 		}),
 		getCourses
 	)
-	.post(addCourse);
+	.post(protect, authorize('publisher', 'admin'), addCourse);
 
-router.route('/:id').get(getCourse).put(updateCourse).delete(deleteCourse);
+router
+	.route('/:id')
+	.get(getCourse)
+	.put(protect, authorize('publisher', 'admin'), updateCourse)
+	.delete(protect, authorize('publisher', 'admin'), deleteCourse);
 
 export default router;

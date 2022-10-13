@@ -8,6 +8,7 @@ import {
 	getBootcampsInRadius,
 	bootcampPhotoUpload,
 } from '../controllers/bootcamp-controller';
+import { authorize, protect } from '../middlewares/auth.middleware';
 import Bootcamp from '../models/Bootcamp';
 
 // Middleware
@@ -26,14 +27,16 @@ router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius);
 router
 	.route('/')
 	.get(advancedResults(Bootcamp, 'courses'), getAllBootcamps)
-	.post(createBootcamp);
+	.post(protect, authorize('publisher', 'admin'), createBootcamp);
 
-router.route('/:id/photo').put(bootcampPhotoUpload);
+router
+	.route('/:id/photo')
+	.put(protect, authorize('publisher', 'admin'), bootcampPhotoUpload);
 
 router
 	.route('/:id')
 	.get(getBootcamp)
-	.put(updateBootcamp)
-	.delete(deleteBootcamp);
+	.put(protect, authorize('publisher', 'admin'), updateBootcamp)
+	.delete(protect, authorize('publisher', 'admin'), deleteBootcamp);
 
 export default router;

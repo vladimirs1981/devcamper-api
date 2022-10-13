@@ -1,6 +1,21 @@
-import mongoose, { Schema } from 'mongoose';
+import { model, Model, ObjectId, Schema } from 'mongoose';
 
-const CourseSchema = new Schema({
+interface ICourse {
+	title: string;
+	description: string;
+	weeks: string;
+	tuition: number;
+	minimumSkill: string;
+	scholarshipAvailable?: boolean;
+	createdAt?: Date;
+	bootcamp: Schema.Types.ObjectId;
+}
+
+interface Course extends Model<ICourse> {
+	getAverageCost: (id: ObjectId) => any;
+}
+
+const CourseSchema = new Schema<ICourse, Course>({
 	title: {
 		type: String,
 		trim: true,
@@ -63,12 +78,12 @@ CourseSchema.statics.getAverageCost = async function (bootcampid) {
 
 // Call getAverageCost after save
 CourseSchema.post('save', function () {
-	(this.constructor as any).getAverageCost(this.bootcamp);
+	(this.constructor as Course).getAverageCost(this.bootcamp);
 });
 
 // Call getAverageCost before remove
 CourseSchema.pre('remove', function () {
-	(this.constructor as any).getAverageCost(this.bootcamp);
+	(this.constructor as Course).getAverageCost(this.bootcamp);
 });
 
-export default mongoose.model('Course', CourseSchema);
+export const Course = model<ICourse, Course>('Course', CourseSchema);

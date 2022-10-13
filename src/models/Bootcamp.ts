@@ -1,5 +1,4 @@
 import mongoose, { Schema } from 'mongoose';
-import { IBootcamp } from '../interfaces/bootcamp-interface';
 import slugify from 'slugify';
 import geocoder from '../utils/geocoder';
 
