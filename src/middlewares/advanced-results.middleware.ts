@@ -6,7 +6,7 @@ export interface AdvancedResponse extends Response {
 }
 
 const advancedResults =
-	(model: any, populate: any) =>
+	(model: any, populate?: any) =>
 	async (req: Request, res: Response, next: NextFunction) => {
 		let query;
 

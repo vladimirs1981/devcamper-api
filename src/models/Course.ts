@@ -9,6 +9,7 @@ interface ICourse {
 	scholarshipAvailable?: boolean;
 	createdAt?: Date;
 	bootcamp: Schema.Types.ObjectId;
+	user: Schema.Types.ObjectId;
 }
 
 interface Course extends Model<ICourse> {
@@ -49,6 +50,11 @@ const CourseSchema = new Schema<ICourse, Course>({
 	bootcamp: {
 		type: Schema.Types.ObjectId,
 		ref: 'Bootcamp',
+		required: true,
+	},
+	user: {
+		type: Schema.Types.ObjectId,
+		ref: 'User',
 		required: true,
 	},
 });
