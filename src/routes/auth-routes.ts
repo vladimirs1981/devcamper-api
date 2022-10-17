@@ -7,13 +7,18 @@ import {
 	resetPassword,
 } from '../controllers/auth-controller';
 import { protect } from '../middlewares/auth.middleware';
-import { updateDetails, updatePassword } from '../controllers/auth-controller';
+import {
+	updateDetails,
+	updatePassword,
+	logout,
+} from '../controllers/auth-controller';
 
 const router: Router = express.Router();
 
 router.post('/register', register);
 
 router.post('/login', login);
+router.get('/logout', logout);
 
 router.get('/me', protect, getMe);
 router.put('/updatedetails', protect, updateDetails);
