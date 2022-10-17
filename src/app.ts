@@ -12,6 +12,12 @@ import reviewRoutes from './routes/review-routes';
 import morgan from 'morgan';
 import connectDB from './config/db';
 import path from 'path';
+import mongoSanitize from 'express-mongo-sanitize';
+import helmet from 'helmet';
+import xss from 'xss-clean';
+import rateLimit from 'express-rate-limit';
+import hpp from 'hpp';
+import cors from 'cors';
 
 // Load env config
 dotenv.config();
@@ -34,6 +40,29 @@ app.use(morgan('dev'));
 
 // File upload
 app.use(fileUpload());
+
+// Sanitize data
+app.use(mongoSanitize());
+
+// Set security headers
+app.use(helmet());
+
+// Prevent XSS attacks
+app.use(xss());
+
+// Rate limit
+const limiter = rateLimit({
+	windowMs: 10 * 60 * 1000, // 10 mins
+	max: 100,
+});
+
+app.use(limiter);
+
+// Prevent http param pollution
+app.use(hpp());
+
+// Enable cors
+app.use(cors());
 
 // Set static folder
 console.log(path.join(__dirname, '../public'));

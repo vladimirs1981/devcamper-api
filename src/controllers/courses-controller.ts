@@ -134,7 +134,7 @@ export const deleteCourse = asyncHandler(
 		}
 
 		// Make sure user is course owner
-		if (course.user?.toString !== req.user.id && req.user.role !== 'admin') {
+		if (course.user?.toString() !== req.user.id && req.user.role !== 'admin') {
 			return next(
 				new ErrorResponse(
 					`User ${req.user.id} is not authorized to delete course  ${course._id}`,

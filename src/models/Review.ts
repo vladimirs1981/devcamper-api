@@ -1,4 +1,4 @@
-import { model, Model, ObjectId, Schema } from 'mongoose';
+import { Model, ObjectId, Schema } from 'mongoose';
 import mongoose from 'mongoose';
 
 interface IRating {

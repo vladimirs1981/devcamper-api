@@ -4,6 +4,7 @@ import Bootcamp from '../models/Bootcamp';
 import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import path from 'path';
+import { Schema } from 'mongoose';
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -70,7 +71,10 @@ export const updateBootcamp = asyncHandler(
 		}
 
 		// Make sure user is bootcamp owner
-		if (bootcamp.user?.toString !== req.user.id && req.user.role !== 'admin') {
+		if (
+			(bootcamp.user as Schema.Types.ObjectId).toString() !== req.user.id &&
+			req.user.role !== 'admin'
+		) {
 			return next(
 				new ErrorResponse(
 					`User ${req.user.id} is not authorized to update this bootcamp`,
@@ -102,7 +106,10 @@ export const deleteBootcamp = asyncHandler(
 		}
 
 		// Make sure user is bootcamp owner
-		if (bootcamp.user?.toString !== req.user.id && req.user.role !== 'admin') {
+		if (
+			(bootcamp.user as Schema.Types.ObjectId).toString() !== req.user.id &&
+			req.user.role !== 'admin'
+		) {
 			return next(
 				new ErrorResponse(
 					`User ${req.user.id} is not authorized to delete this bootcamp`,
