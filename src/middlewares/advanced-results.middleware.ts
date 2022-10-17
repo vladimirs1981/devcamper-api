@@ -1,12 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export interface AdvancedResponse extends Response {
 	advancedResults: {};
 }
 
 const advancedResults =
-	(model: any, populate?: any) =>
+	(
+		model: HydratedDocument<any>,
+		populate?:
+			| string
+			| {
+					path: string;
+					select: string;
+			  }
+	) =>
 	async (req: Request, res: Response, next: NextFunction) => {
 		let query;
 
@@ -62,7 +70,16 @@ const advancedResults =
 		const results = await query;
 
 		// Pagination result
-		const pagination: any = {};
+		const pagination: {
+			next?: {
+				page: number;
+				limit: number;
+			};
+			prev?: {
+				page: number;
+				limit: number;
+			};
+		} = {};
 
 		if (endIndex < total) {
 			pagination.next = {

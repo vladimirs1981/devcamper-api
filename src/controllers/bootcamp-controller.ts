@@ -10,7 +10,7 @@ import { Schema } from 'mongoose';
 // @route   GET /api/v1/bootcamps
 // @access  Public
 export const getAllBootcamps = asyncHandler(
-	async (req: Request, res: any, next: NextFunction) => {
+	async (req: Request, res: Response, next: NextFunction) => {
 		res.status(200).json(res.advancedResults);
 	}
 );
@@ -153,6 +153,18 @@ export const getBootcampsInRadius = asyncHandler(
 	}
 );
 
+interface fileType {
+	name: string;
+	data: Buffer;
+	size: number;
+	encoding: string;
+	tempFilePath: string;
+	truncated: boolean;
+	mimetype: string;
+	md5: string;
+	mv: Function;
+}
+
 // @desc    Upload photo for bootcamp
 // @route   PUT /api/v1/bootcamps/:id/photo
 // @access  Private
@@ -167,7 +179,10 @@ export const bootcampPhotoUpload = asyncHandler(
 		}
 
 		// Make sure user is bootcamp owner
-		if (bootcamp.user?.toString !== req.user.id && req.user.role !== 'admin') {
+		if (
+			(bootcamp.user as Schema.Types.ObjectId).toString() !== req.user.id &&
+			req.user.role !== 'admin'
+		) {
 			return next(
 				new ErrorResponse(
 					`User ${req.user.id} is not authorized to update this bootcamp`,
@@ -180,7 +195,8 @@ export const bootcampPhotoUpload = asyncHandler(
 			return next(new ErrorResponse(`Please upload a file`, 400));
 		}
 
-		const file: any = req.files.file;
+		console.log(req.files.file);
+		const file = req.files.file as fileType;
 
 		// Make sure that the file is a photo
 		if (!file.mimetype.startsWith('image')) {
