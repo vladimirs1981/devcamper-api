@@ -8,6 +8,7 @@ import bootcampRoutes from './routes/bootcamp-routes';
 import courseRoutes from './routes/course-routes';
 import authRoutes from './routes/auth-routes';
 import userRoutes from './routes/users-routes';
+import reviewRoutes from './routes/review-routes';
 import morgan from 'morgan';
 import connectDB from './config/db';
 import path from 'path';
@@ -43,6 +44,7 @@ app.use(`${baseUrl}/bootcamps`, bootcampRoutes);
 app.use(`${baseUrl}/courses`, courseRoutes);
 app.use(`${baseUrl}/auth`, authRoutes);
 app.use(`${baseUrl}/auth/users`, userRoutes);
+app.use(`${baseUrl}/reviews`, reviewRoutes);
 
 // Error middleware, must be after route initialization
 app.use(errorHandler);

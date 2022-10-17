@@ -16,11 +16,13 @@ import advancedResults from '../middlewares/advanced-results.middleware';
 
 // Include other resourse routers
 import courseRouter from './course-routes';
+import reviewRouter from './review-routes';
 
 const router: Router = express.Router();
 
 // Re-route into other resource routers
 router.use('/:bootcampId/courses', courseRouter);
+router.use('/:bootcampId/reviews', reviewRouter);
 
 router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius);
 

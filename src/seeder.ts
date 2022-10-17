@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import Bootcamp from './models/Bootcamp';
 import { Course } from './models/Course';
 import { User } from './models/User';
+import Review from './models/Review';
 import path from 'path';
 
 // Load env vars
@@ -29,11 +30,16 @@ const users = JSON.parse(
 	fs.readFileSync(path.join(__dirname, '../_data/users.json'), 'utf-8')
 );
 
+const reviews = JSON.parse(
+	fs.readFileSync(path.join(__dirname, '../_data/reviews.json'), 'utf-8')
+);
+
 // Import into DB
 const importData = async () => {
 	try {
 		await Bootcamp.create(bootcamps);
 		await Course.create(courses);
+		await Review.create(reviews);
 		await User.create(users);
 		console.log('Data imported...');
 		process.exit();
@@ -48,6 +54,7 @@ const deleteData = async () => {
 		await Bootcamp.deleteMany();
 		await Course.deleteMany();
 		await User.deleteMany();
+		await Review.deleteMany();
 		console.log('Data deleted...');
 		process.exit();
 	} catch (error) {
