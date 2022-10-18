@@ -28,5 +28,21 @@ npm run dev
 npm start
 ```
 
+## Database
+
+```
+# Seed database
+npm run db:seed
+
+# Drop database
+npm run db:drop
+```
+
+## Documentation
+
+```
+http://localhost:5000/
+```
+
 - Version: 1.0.0
 - License: MIT

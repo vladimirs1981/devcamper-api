@@ -6,7 +6,9 @@
   "scripts": {
     "build": "npx tsc",
     "start": "set NODE_ENV=production& node dist/app.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/app.js\"",
+    "db:seed": "node dist/seeder.js -i",
+    "db:drop": "node dist/seeder.js -d"
   },
   "author": "Vladimir Stojanovic",
   "license": "MIT",
