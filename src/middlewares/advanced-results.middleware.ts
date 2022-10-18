@@ -1,13 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
-import mongoose, { HydratedDocument } from 'mongoose';
-
-export interface AdvancedResponse extends Response {
-	advancedResults: {};
-}
+import { HydratedDocument } from 'mongoose';
+import redisClient from '../config/redis';
 
 const advancedResults =
 	(
 		model: HydratedDocument<any>,
+		key: string,
 		populate?:
 			| string
 			| {
@@ -66,8 +64,11 @@ const advancedResults =
 			query = query.populate(populate);
 		}
 
+		const cachedResults = await redisClient.get(
+			`${key}:${JSON.stringify(req.query)}`
+		);
+
 		// Executing query
-		const results = await query;
 
 		// Pagination result
 		const pagination: {
@@ -94,6 +95,25 @@ const advancedResults =
 				limit,
 			};
 		}
+
+		if (cachedResults) {
+			console.log('CACHE HIT!');
+			res.advancedResults = {
+				success: true,
+				count: JSON.parse(cachedResults).length,
+				pagination,
+				data: JSON.parse(cachedResults),
+			};
+
+			next();
+		}
+
+		const results = await query;
+		redisClient.setEx(
+			`${key}:${JSON.stringify(req.query)}`,
+			Number(process.env.REDIS_EXP),
+			JSON.stringify(results)
+		);
 
 		res.advancedResults = {
 			success: true,

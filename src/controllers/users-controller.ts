@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { InstanceMethods, IUser, User } from '../models/User';
+import { User } from '../models/User';
 import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
-import { Document, Types } from 'mongoose';
+import redisClient from '../config/redis';
 
 // @desc    Get all users
 // @route   GET /api/v1/auth/users
@@ -19,6 +19,17 @@ export const getUsers = asyncHandler(
 export const getSingleUser = asyncHandler(
 	async (req: Request, res: Response, next: NextFunction) => {
 		const user = await User.findById(req.params.id);
+		if (!user) {
+			return next(
+				new ErrorResponse(`User not found with ID of ${req.params.id}`, 404)
+			);
+		}
+
+		redisClient.setEx(
+			req.params.id,
+			Number(process.env.REDIS_EXP),
+			JSON.stringify(user)
+		);
 
 		res.status(200).json({
 			success: true,
@@ -51,6 +62,12 @@ export const updateUser = asyncHandler(
 			runValidators: true,
 		});
 
+		if (!user) {
+			return next(
+				new ErrorResponse(`User not found with ID of ${req.params.id}`, 404)
+			);
+		}
+
 		res.status(200).json({
 			success: true,
 			data: user,
@@ -63,7 +80,15 @@ export const updateUser = asyncHandler(
 // @access  Private/Admin
 export const deleteUser = asyncHandler(
 	async (req: Request, res: Response, next: NextFunction) => {
-		await User.findByIdAndDelete(req.params.id);
+		const user = await User.findById(req.params.id);
+
+		if (!user) {
+			return next(
+				new ErrorResponse(`User not found with ID of ${req.params.id}`, 404)
+			);
+		}
+
+		user.remove();
 
 		res.status(200).json({
 			success: true,

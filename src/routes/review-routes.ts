@@ -8,13 +8,14 @@ import Review from '../models/Review';
 import advancedResults from '../middlewares/advanced-results.middleware';
 import { protect, authorize } from '../middlewares/auth.middleware';
 import { updateReview, deleteReview } from '../controllers/review-controller';
+import { checkCache } from '../middlewares/check-cache.middleware';
 
 const router: Router = express.Router({ mergeParams: true });
 
 router
 	.route('/')
 	.get(
-		advancedResults(Review, {
+		advancedResults(Review, 'review', {
 			path: 'bootcamp',
 			select: 'name description',
 		}),
@@ -24,7 +25,7 @@ router
 
 router
 	.route('/:id')
-	.get(getReview)
+	.get(checkCache, getReview)
 	.put(protect, authorize('user', 'admin'), updateReview)
 	.delete(protect, authorize('user', 'admin'), deleteReview);
 

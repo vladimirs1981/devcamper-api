@@ -17,6 +17,7 @@ import advancedResults from '../middlewares/advanced-results.middleware';
 // Include other resourse routers
 import courseRouter from './course-routes';
 import reviewRouter from './review-routes';
+import { checkCache } from '../middlewares/check-cache.middleware';
 
 const router: Router = express.Router();
 
@@ -28,7 +29,7 @@ router.route('/radius/:zipcode/:distance').get(getBootcampsInRadius);
 
 router
 	.route('/')
-	.get(advancedResults(Bootcamp, 'courses'), getAllBootcamps)
+	.get(advancedResults(Bootcamp, 'bootcamp', 'courses'), getAllBootcamps)
 	.post(protect, authorize('publisher', 'admin'), createBootcamp);
 
 router
@@ -37,7 +38,7 @@ router
 
 router
 	.route('/:id')
-	.get(getBootcamp)
+	.get(checkCache, getBootcamp)
 	.put(protect, authorize('publisher', 'admin'), updateBootcamp)
 	.delete(protect, authorize('publisher', 'admin'), deleteBootcamp);
 

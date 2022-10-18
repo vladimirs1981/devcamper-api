@@ -65,7 +65,6 @@ app.use(hpp());
 app.use(cors());
 
 // Set static folder
-console.log(path.join(__dirname, '../public'));
 app.use(express.static(path.join(__dirname, '../public')));
 
 // Route initialization

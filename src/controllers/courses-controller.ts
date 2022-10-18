@@ -3,6 +3,7 @@ import { Course } from '../models/Course';
 import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import Bootcamp from '../models/Bootcamp';
+import redisClient from '../config/redis';
 
 // @desc    Get all courses
 // @route   GET /api/v1/courses
@@ -39,6 +40,12 @@ export const getCourse = asyncHandler(
 				new ErrorResponse(`Course not found with ID of ${req.params.id}`, 404)
 			);
 		}
+
+		redisClient.setEx(
+			req.params.id,
+			Number(process.env.REDIS_EXP),
+			JSON.stringify(course)
+		);
 
 		res.status(200).json({
 			success: true,

@@ -5,6 +5,7 @@ import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import path from 'path';
 import { Schema } from 'mongoose';
+import redisClient from '../config/redis';
 
 // @desc    Get all bootcamps
 // @route   GET /api/v1/bootcamps
@@ -26,6 +27,13 @@ export const getBootcamp = asyncHandler(
 				new ErrorResponse(`Bootcamp not found with ID of ${req.params.id}`, 404)
 			);
 		}
+
+		redisClient.setEx(
+			req.params.id,
+			Number(process.env.REDIS_EXP),
+			JSON.stringify(bootcamp)
+		);
+
 		res.status(200).json({ success: true, data: bootcamp });
 	}
 );
@@ -195,7 +203,6 @@ export const bootcampPhotoUpload = asyncHandler(
 			return next(new ErrorResponse(`Please upload a file`, 400));
 		}
 
-		console.log(req.files.file);
 		const file = req.files.file as fileType;
 
 		// Make sure that the file is a photo

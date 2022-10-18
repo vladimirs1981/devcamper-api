@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import { Course } from '../models/Course';
 import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import Review from '../models/Review';
 import Bootcamp from '../models/Bootcamp';
+import redisClient from '../config/redis';
 
 // @desc    Get all reviews
 // @route   GET /api/v1/reviews
@@ -40,6 +40,12 @@ export const getReview = asyncHandler(
 				new ErrorResponse(`Review not found with ID of ${req.params.id}`, 404)
 			);
 		}
+
+		redisClient.setEx(
+			req.params.id,
+			Number(process.env.REDIS_EXP),
+			JSON.stringify(review)
+		);
 
 		res.status(200).json({
 			success: true,
@@ -88,8 +94,6 @@ export const updateReview = asyncHandler(
 				new ErrorResponse(`Review not found with ID of ${req.params.id}`, 404)
 			);
 		}
-
-		console.log(review.user.toString);
 
 		// Make sure user is review owner or user is an admin
 		if (review.user?.toString() !== req.user.id && req.user.role !== 'admin') {

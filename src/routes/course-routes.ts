@@ -8,13 +8,14 @@ import {
 import { authorize, protect } from '../middlewares/auth.middleware';
 import advancedResults from '../middlewares/advanced-results.middleware';
 import { Course } from '../models/Course';
+import { checkCache } from '../middlewares/check-cache.middleware';
 
 const router: Router = express.Router({ mergeParams: true });
 
 router
 	.route('/')
 	.get(
-		advancedResults(Course, {
+		advancedResults(Course, 'course', {
 			path: 'bootcamp',
 			select: 'name description',
 		}),
@@ -24,7 +25,7 @@ router
 
 router
 	.route('/:id')
-	.get(getCourse)
+	.get(checkCache, getCourse)
 	.put(protect, authorize('publisher', 'admin'), updateCourse)
 	.delete(protect, authorize('publisher', 'admin'), deleteCourse);
 
