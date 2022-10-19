@@ -3,6 +3,9 @@ version: '3'
 services:
   redis:
     image: 'redis:latest'
+    command: redis-server --requirepass sOmE_sEcUrE_pAsS
+    volumes:
+      - ./cache:/data/cache
   mongo:
     image: mongo:latest
     container_name: api_mongo
@@ -15,6 +18,9 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: .
+    depends_on:
+      - mongo
+      - redis
     volumes:
       - /app/node_modules
     ports:
@@ -23,5 +29,6 @@ services:
       - MONGO_URI=mongodb://api_mongo:27017
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - REDIS_PW=sOmE_sEcUrE_pAsS
     env_file:
       - .env
