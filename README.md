@@ -38,6 +38,19 @@ npm run db:seed
 npm run db:drop
 ```
 
+## Run app with Docker
+
+```
+# First time build and run containers
+docker-compose up -d --build
+
+# Every next time
+docker-compose up
+
+# Stop containers
+docker-compose down
+```
+
 ## Documentation
 
 ```

@@ -4,6 +4,7 @@ import { ErrorResponse } from '../utils/error-response';
 import asyncHandler from '../middlewares/async-await.middleware';
 import Bootcamp from '../models/Bootcamp';
 import redisClient from '../config/redis';
+import { Schema } from 'mongoose';
 
 // @desc    Get all courses
 // @route   GET /api/v1/courses
@@ -74,7 +75,10 @@ export const addCourse = asyncHandler(
 		}
 
 		// Make sure user is bootcamp owner
-		if (bootcamp.user?.toString !== req.user.id && req.user.role !== 'admin') {
+		if (
+			(bootcamp.user as Schema.Types.ObjectId).toString() !== req.user.id &&
+			req.user.role !== 'admin'
+		) {
 			return next(
 				new ErrorResponse(
 					`User ${req.user.id} is not authorized to add a course to bootcamp ${bootcamp._id}`,
@@ -106,7 +110,7 @@ export const updateCourse = asyncHandler(
 		}
 
 		// Make sure user is course owner
-		if (course.user?.toString !== req.user.id && req.user.role !== 'admin') {
+		if (course.user?.toString() !== req.user.id && req.user.role !== 'admin') {
 			return next(
 				new ErrorResponse(
 					`User ${req.user.id} is not authorized to update course  ${course._id}`,
